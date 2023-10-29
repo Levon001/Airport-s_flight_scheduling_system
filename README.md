@@ -22,7 +22,7 @@ The Airport Management System is a web application developed in Java, using Apac
 
 1. Clone the repository to your local machine:
    ```sh
-   git clone https://github.com/your-username/your-repository-name.git
+   git clone https://github.com/Levon001/Airport-s_flight_scheduling_system.git
 
 
 Import the project into your IDE.
