@@ -11,41 +11,7 @@
 <html>
 <head>
     <title>GateRunwayPair</title>
-    <link href="/style/runwayGatePAir.css">
-
-    <script>
-        function onlyOne(checkbox) {
-            var checkboxes = document.getElementsByName('check');
-            var submitButton = document.getElementById('submitButton');
-            var isChecked = false;
-
-            checkboxes.forEach((item) => {
-                if (item !== checkbox) item.checked = false;
-                if (item.checked) isChecked = true;
-            });
-
-            submitButton.disabled = !isChecked;
-        }
-
-        function showModal() {
-            document.getElementById("myModal").style.display = "block";
-        }
-
-        function closeModal() {
-            document.getElementById("myModal").style.display = "none";
-        }
-
-        function submitFormAndGoBack() {
-            showModal();
-
-            // Set a timeout to wait for 3 seconds (3000 milliseconds)
-            setTimeout(function() {
-                closeModal(); // Close the modal (optional)
-                window.history.back(); // Go back to the previous page
-            }, 3000); // Adjust the time as needed
-        }
-
-    </script>
+    <link rel="stylesheet" type="text/css" href="/style/runwayGatePAir.css">
 </head>
 <body>
 <h4>choose from schedule</h4>
@@ -122,5 +88,38 @@
     <a href="/">logout</a>
 </form>
 
+    <script>
+        function onlyOne(checkbox) {
+            var checkboxes = document.getElementsByName('check');
+            var submitButton = document.getElementById('submitButton');
+            var isChecked = false;
+
+            checkboxes.forEach((item) => {
+                if (item !== checkbox) item.checked = false;
+                if (item.checked) isChecked = true;
+            });
+
+            submitButton.disabled = !isChecked;
+        }
+
+        function showModal() {
+            document.getElementById("myModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("myModal").style.display = "none";
+        }
+
+        function submitFormAndGoBack() {
+            showModal();
+
+            // Set a timeout to wait for 3 seconds (3000 milliseconds)
+            setTimeout(function() {
+                closeModal(); // Close the modal (optional)
+                window.history.back(); // Go back to the previous page
+            }, 3000); // Adjust the time as needed
+        }
+
+    </script>
 </body>
 </html>
