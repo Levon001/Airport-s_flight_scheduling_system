@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-    <h1>Hello World</h1>
+    <h1>Admin Page</h1>
 
     <form action="scheduleList" method="post">
         <label for="directionDropdown">Select Direction:</label>
