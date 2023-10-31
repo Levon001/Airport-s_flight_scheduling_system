@@ -1,35 +1,146 @@
-body, html {
-    height: 100%;
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background-color: #f4f4f4;
+    margin: -40px auto;
+}
+
+
+
+.container {
+    width: 80%;
+    margin: auto;
+    overflow: hidden;
+}
+
+header {
+    background-color: #333;
+    color: white;
+    padding-top: 30px;
+    min-height: 70px;
+    border-bottom: 3px solid #eaeaea;
+}
+
+header a {
+    color: #ffffff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 16px;
+}
+
+
+header #branding {
+    display: inline;
+}
+
+header #branding h1 {
     margin: 0;
 }
 
-#home-start {
-    background-image: url("/images/airplane-flying-on-dark-sky.jpg");
-    height: 369px;
-    width: 100%;
-    background-position-y: 140%;
-    background-position-x: 65%;
-    margin-top: -2%;
+header .highlight, header .current a {
+    font-weight: bold;
+    color: #e8491d;
+    padding: 0;
 }
 
-#welcome {
-    margin: 0 33%;
+header a:hover {
     color: white;
-    padding: 25px 0
+    font-weight: bold;
+}
+
+.main {
+    padding: 30px 0;
+}
+
+.main h2 {
+    color: #333;
+}
+
+.main p {
+    font-size: 18px;
+    line-height: 1.6em;
+}
+
+footer {
+    padding: 20px 0;
+    background-color: #333;
+    color: white;
+    text-align: center;
+}
+
+footer p {
+    margin: 0;
 }
 
 table {
-margin-top: 24px;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    text-align: center;
+    padding: 8px;
+    /*text-align: left;*/
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
 }
 
 .buttons {
-    display: flex;
+    margin: 20px 0;
 }
 
-.fa-solid, .fa-plane-departure {
-    font-size: 55px;
+.button-h, .buttons a {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    border: none;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
-#arrived {
-    margin-left: 15px;
+.button-h:hover, .buttons a:hover, .logout-btn:hover, .previous-button:hover  {
+    color: #e8491d;
 }
+
+.button-h:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.logout-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    margin-right: 4%;
+    text-decoration: none;
+    color: white;
+}
+
+
+.previous-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #333;
+    color: white;
+    text-decoration: none;
+    top: 30%;
+    position: absolute;
+    left: 80.4%;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
