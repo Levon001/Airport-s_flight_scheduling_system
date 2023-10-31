@@ -75,25 +75,6 @@ public class RunwayRepo {
     }
 
 
-    public boolean delete(int runwayWithPeriodId) {
-
-        String queryDelete = "UPDATE runwayWithPeriod SET isActive = 0 WHERE runwayWithPeriodId = ?";
-
-        try (PreparedStatement preparedStatement = connectionRunway.prepareStatement(queryDelete)) {
-            preparedStatement.setInt(1, runwayWithPeriodId);
-            int affectedRows = preparedStatement.executeUpdate();
-
-            if (affectedRows == 0) {
-                return false;
-            }
-        } catch (SQLException e) {
-            System.err.println("SQL Exception in RunWayRepo during deleting: " + e.getMessage());
-            return false;
-        }
-        return true;
-    }
-
-
     public LinkedHashMap<Integer, MyPeriod> getAvailableRunways() {
         LinkedHashMap<Integer, MyPeriod> availableRunways = new LinkedHashMap<>();
         LocalDate today = LocalDate.now();
