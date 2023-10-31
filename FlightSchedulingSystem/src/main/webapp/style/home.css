@@ -122,7 +122,7 @@ tr:hover {
 }
 
 .logout-btn {
-    position: fixed;
+    position: absolute;
     top: 20px;
     right: 20px;
     margin-right: 4%;
