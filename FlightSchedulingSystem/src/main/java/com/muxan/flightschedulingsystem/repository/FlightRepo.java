@@ -17,6 +17,10 @@ public class FlightRepo {
     private static final Connection connectionFlight = DatabaseConnectionProvider.getConnection();
     private static final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
+    private final AirplaneRepo airplaneRepo = new AirplaneRepo();
+    private final GateWithPeriodRepo gateWithPeriodRepo = new GateWithPeriodRepo();
+    private final RunwayRepo runwayRepo = new RunwayRepo();
+
 
     public FlightRepo() {
         try {
@@ -44,33 +48,6 @@ public class FlightRepo {
     }
 
 
-    public List<Flight> getAll() {
-        List<Flight> flights = new ArrayList<>();
-        AirplaneRepo airplaneRepo = new AirplaneRepo();
-        String query = "SELECT flightId, direction, country, airplaneId, runwayWithPeriodId, gateWithPeriodId FROM flight";
-
-        try (Statement statement = connectionFlight.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-
-            while (resultSet.next()) {
-                Airplane airplane = airplaneRepo.getById(resultSet.getInt("airplaneId"));
-
-                Flight flight = new Flight(
-                        resultSet.getInt("flightId"),
-                        resultSet.getInt("direction"),
-                        resultSet.getString("country"),
-                        airplane
-                );
-
-                flights.add(flight);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
-        return flights;
-    }
-
 
     public List<Flight> getFlightsByDirection(int direction) {
         if (direction != 0 && direction != 1) {
@@ -78,7 +55,6 @@ public class FlightRepo {
         }
 
         List<Flight> flights = new ArrayList<>();
-        AirplaneRepo airplaneRepo = new AirplaneRepo();
 
         String query = "SELECT flightId, direction, country, airplaneId, runwayWithPeriodId, gateWithPeriodId FROM flight WHERE direction = ?";
 
@@ -88,12 +64,16 @@ public class FlightRepo {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     Airplane airplane = airplaneRepo.getById(resultSet.getInt("airplaneId"));
+                    GateWithPeriod gate = gateWithPeriodRepo.getById(resultSet.getInt("gateWithPeriodId"));
+                    RunwayWithPeriod runway = runwayRepo.getById(resultSet.getInt("runwayWithPeriodId"));
 
                     Flight flight = new Flight(
                             resultSet.getInt("flightId"),
                             resultSet.getInt("direction"),
                             resultSet.getString("country"),
-                            airplane
+                            airplane,
+                            runway,
+                            gate
                     );
 
                     flights.add(flight);
@@ -105,8 +85,6 @@ public class FlightRepo {
 
         return flights;
     }
-
-
 
 
     public Flight save(Flight flight) {
@@ -139,34 +117,7 @@ public class FlightRepo {
         return null;
     }
 
-    public Flight getById(int flightId) {
-        String sqlQuery = "SELECT * FROM flight WHERE flightId = ?";
 
-        try (PreparedStatement preparedStatement = connectionFlight.prepareStatement(sqlQuery)) {
-            preparedStatement.setInt(1, flightId);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                int id = resultSet.getInt(1);
-                int direction = resultSet.getInt("direction");  // Assuming direction is stored as a single character string in the DB
-                String country = resultSet.getString("country");
-                int airplaneId = resultSet.getInt("airplaneId");
-                int runwayWithPeriodId = resultSet.getInt("runwayWithPeriodId");
-                int gateWithPeriodId = resultSet.getInt("gateWithPeriodId");
-
-
-                Airplane airplane = new AirplaneRepo().getById(airplaneId);
-                GateWithPeriod gateWithPeriod = new GateWithPeriodRepo().getById(gateWithPeriodId);
-                RunwayWithPeriod runwayWithPeriod = new RunwayRepo().getById(runwayWithPeriodId);
-
-                // Constructing and returning the Flight object
-                return new Flight(id, direction, country, airplane, runwayWithPeriod, gateWithPeriod);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return null;
-    }
 
     public void updateDepartureFlightStatus() {
         String query = "SELECT flightId, runwayWithPeriod.startTime " +
@@ -180,7 +131,7 @@ public class FlightRepo {
                     int flightId = resultSet.getInt("flightId");
                     String startTime = resultSet.getString("startTime");
 
-                    if (startTime != null && startTime.compareTo(LocalTime.now().toString()) < 0) {
+                    if (startTime != null && startTime.compareTo(getComparableTime()) < 0) {
                         updateFlightStatusToInactive(connectionFlight, flightId);
                     }
                 }
@@ -189,6 +140,10 @@ public class FlightRepo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    private String getComparableTime() {
+        return java.time.LocalTime.now().toString();
     }
 
     public void updateArrivedFlightStatus() {
@@ -203,7 +158,7 @@ public class FlightRepo {
                     int flightId = resultSet.getInt("flightId");
                     String startTime = resultSet.getString("startTime");
 
-                    if (startTime != null && startTime.compareTo(getComparableTime()) < 0) {
+                    if (startTime != null && startTime.compareTo(LocalTime.now().plusHours(1).toString()) < 0) {
                         updateFlightStatusToInactive(connectionFlight, flightId);
                     }
                 }
@@ -223,42 +178,7 @@ public class FlightRepo {
         }
     }
 
-    private String getComparableTime() {
-        return java.time.LocalTime.now().minusHours(1).toString();
-    }
-
-    public List<Flight> getFlightsByStatus(int status) {
-        AirplaneRepo airplaneRepo = new AirplaneRepo();
-        GateWithPeriodRepo gate = new GateWithPeriodRepo();
-        RunwayRepo runway = new RunwayRepo();
-        List<Flight> flights = new ArrayList<>();
-        String queryIsActive = "SELECT * FROM flight WHERE isActive = ?";
-
-        try (PreparedStatement statement = connectionFlight.prepareStatement(queryIsActive)) {
-
-            statement.setInt(1, status);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    int flightId = resultSet.getInt("flightId");
-                    int direction = resultSet.getInt("direction");
-                    String country = resultSet.getString("country");
-
-                    Airplane airplane = airplaneRepo.getById(resultSet.getInt("airplaneId"));
-                    RunwayWithPeriod runwayWithPeriod = runway.getById(resultSet.getInt("runwayWithPeriodId"));
-                    GateWithPeriod gateWithPeriod = gate.getById(resultSet.getInt("gateWithPeriodId"));
-                    Flight flight = new Flight(flightId, direction, country, airplane, runwayWithPeriod, gateWithPeriod);
-
-                    flights.add(flight);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return flights;
-    }
-
-
+   
     public int getIsActive(int flightId) {
         int isActive = 0;
 
@@ -279,6 +199,7 @@ public class FlightRepo {
 
         return isActive;
     }
+
 
 }
 
