@@ -43,6 +43,8 @@ Create Flights: Navigate to the admin panel and create the flights, assign runwa
 
 Once the flights are created and scheduled, users can log in or register to access the application, reserve tickets, and view flight information.
 
+## More about this project you can learn following to this link:
+https://medium.com/@levsyan22/airports-flight-scheduling-system-0111dc8d7557
 
 Contributing
 Contributions are welcome! Please feel free to submit a pull request or open an issue if you have any improvements or find any bugs.
