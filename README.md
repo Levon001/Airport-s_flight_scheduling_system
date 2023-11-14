@@ -46,9 +46,6 @@ Once the flights are created and scheduled, users can log in or register to acce
 ## More about this project you can learn following to this link:
 https://medium.com/@levsyan22/airports-flight-scheduling-system-0111dc8d7557
 
-Contributing
-Contributions are welcome! Please feel free to submit a pull request or open an issue if you have any improvements or find any bugs.
-
 Contact
 If you have any questions or suggestions, please contact Levon at levsyan22@gmail.com.
 
